@@ -1,73 +1,200 @@
-# React + TypeScript + Vite
+# 📌 **PersonalJobTracker — Frontend (React + TypeScript)**
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern full-stack application for organizing job applications and tracking your internship/job search progress.
+This is the **frontend** for the project, built with **React, TypeScript, Vite, TailwindCSS, Axios, React Query, React Hook Form, and Zod**.
 
-Currently, two official plugins are available:
+The frontend consumes a backend API built with **ASP.NET Core (.NET 8)** and follows a strict contract for `OperationResult<T>` and `PagedResult<T>` response models.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🚀 **Features**
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### ✔ Companies Module
 
-## Expanding the ESLint configuration
+* View all companies with pagination, search, and filters.
+* Create, edit, and delete companies.
+* Clean UI with loading skeletons and delayed loading transitions.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### ✔ Job Applications Module
 
-```js
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
+* Full CRUD for job applications.
+* Filter by status, company, date range, search.
+* Displays company name and links to company details.
+* Status badges and clean layout.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### ✔ Dashboard Overview
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+* Summary panels:
+
+  * Total companies
+  * Total applications
+  * Applications by status
+* Recent applications list
+* Top companies by number of applications
+* Smooth loading skeletons
+
+### ✔ UX Enhancements
+
+* Global skeleton loader system
+* Reusable components
+* Grace delay to prevent flicker on fast API calls
+* Fully mobile-responsive with TailwindCSS
+
+---
+
+## 🛠 **Tech Stack**
+
+### **Frontend**
+
+* ⚛️ **React 18**
+* 🟦 **TypeScript**
+* ⚡ **Vite**
+* 🎨 **TailwindCSS**
+* 🔄 **React Query (TanStack)**
+* 📡 **Axios (custom axiosClient)**
+* 🧾 **React Hook Form**
+* 🧪 **Zod validation**
+
+### **Backend (external repository)**
+
+* ASP.NET Core (.NET 8 Web API)
+* OperationResult response contract
+* PagedResult pagination
+* Job Application / Company endpoints
+* Dashboard Overview endpoint
+
+---
+
+## 📁 **Project Structure**
+
+```
+src/
+  api/
+    axiosClient.ts
+    companyApi.ts
+    jobApplicationApi.ts
+    dashboardApi.ts
+  components/
+    ui/
+      Skeleton.tsx
+  features/
+    companies/
+      pages/
+      components/
+      hooks/
+    jobApplications/
+      pages/
+      components/
+      hooks/
+    dashboard/
+      pages/
+      components/
+      hooks/
+  hooks/
+    useDelayedLoading.ts
+  types/
+    Company.ts
+    JobApplication.ts
+    OperationResult.ts
+    PagedResult.ts
+  router/
+    index.tsx
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
+## 🧩 **Backend Contract Summary**
 
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs["recommended-typescript"],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+All endpoints return:
+
+```ts
+interface OperationResult<T> {
+  isSuccess: boolean;
+  errors: string[];
+  data: T | null;
+}
 ```
+
+Paginated endpoints return:
+
+```ts
+interface PagedResult<T> {
+  items: T[];
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
+}
+```
+
+Dashboard returns:
+
+```ts
+interface DashboardOverviewDto {
+  totalCompanies: number;
+  totalApplications: number;
+  applicationsByStatus: StatusCountDto[];
+  recentApplications: JobApplicationDto[];
+  topCompaniesByApplications: CompanyApplicationsSummaryDto[];
+}
+```
+
+---
+
+## 🔧 **Setup Instructions**
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/mohald-3/PersonalJobTrackerFE.git
+cd PersonalJobTrackerFE
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Create your `.env` file
+
+```
+VITE_API_URL=https://localhost:7010
+```
+
+(or whatever your API base URL is)
+
+### 4. Run the dev server
+
+```bash
+npm run dev
+```
+
+### 5. Build for production
+
+```bash
+npm run build
+```
+
+## 🧹 **Code Quality & Conventions**
+
+* Code formatted with **Prettier**
+* Imports auto-organized
+* Strict TypeScript mode
+* API calls isolated in `/api`
+* Feature-based folder structure
+* Custom hooks for API + caching (React Query)
+
+---
+
+## 🤝 **Future Improvements**
+
+* Dark mode theme
+* Global toast notifications
+* Better dashboard graphs (Recharts)
+* Push to production environment (Azure / Vercel)
+* Mobile-focused redesign
+
+Would you like a **badges version** of the README?
